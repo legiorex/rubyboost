@@ -1,0 +1,9 @@
+%h1 Courses
+= link_to 'New Course', new_course_url
+%ul
+    - @courses.each do |course|
+        %li
+        = course.title
+        = link_to 'Edit', edit_course_path(course)
+        = link_to 'Delete', course_path(course), method: :delete, data: {confirm: 'You Sure?'}
+= paginate @courses
