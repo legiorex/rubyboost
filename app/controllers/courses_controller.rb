@@ -3,7 +3,7 @@ class CoursesController < ApplicationController
     before_action :find_course, only: [:edit, :update, :destroy]
 
 def index
-    @courses = Course.all.page(params[:page]).per(1)
+    @courses = Course.all.page(params[:page]).per(5)
 end
 
 def new
@@ -49,7 +49,5 @@ end
 def find_course
     @course = Course.find(params[:id])
 end
-
-
 
 end
