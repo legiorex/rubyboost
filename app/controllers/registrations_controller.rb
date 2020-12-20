@@ -1,4 +1,8 @@
 class RegistrationsController < ApplicationController
+  def show
+    redirect_to new_registrations_path
+  end
+
   def new
     @user = User.new
   end
@@ -9,6 +13,7 @@ class RegistrationsController < ApplicationController
       sign_in(@user)
       redirect_to courses_path
     else
+
       render :new
     end
   end

@@ -4242,7 +4242,7 @@ Style/StructInheritance:
 Style/SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
   StyleGuide: '#percent-i'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.9'
   VersionChanged: '0.49'
   EnforcedStyle: percent
