@@ -31,7 +31,8 @@ gem 'kaminari'
 
 gem 'carrierwave'
 gem 'mini_magick'
-
+gem 'activerecord-session_store'
+gem 'redis-session-store'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false

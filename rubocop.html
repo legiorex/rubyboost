@@ -1,0 +1,3392 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>RuboCop Inspection Report</title>
+    
+    <style>
+    * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    }
+
+    body, html {
+    font-size: 62.5%;
+    }
+    body {
+    background-color: #ecedf0;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    margin: 0;
+    }
+    code {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 85%;
+    }
+    #header {
+    background: #f9f9f9;
+    color: #333;
+    border-bottom: 3px solid #ccc;
+    height: 50px;
+    padding: 0;
+    }
+    #header .logo {
+    float: left;
+    margin: 5px 12px 7px 20px;
+    width: 38px;
+    height: 38px;
+    }
+    #header .title {
+    display: inline-block;
+    float: left;
+    height: 50px;
+    font-size: 2.4rem;
+    letter-spacing: normal;
+    line-height: 50px;
+    margin: 0;
+    }
+
+    .information, #offenses {
+    width: 100%;
+    padding: 20px;
+    color: #333;
+    }
+    #offenses {
+    padding: 0 20px;
+    }
+
+    .information .infobox {
+    border-left: 3px solid;
+    border-radius: 4px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    padding: 15px;
+    border-color: #0088cc;
+    font-size: 1.4rem;
+    }
+    .information .infobox .info-title {
+    font-size: 1.8rem;
+    line-height: 2.2rem;
+    margin: 0 0 0.5em;
+    }
+    .information .offenses-list li {
+    line-height: 1.8rem
+    }
+    .information .offenses-list {
+    padding-left: 20px;
+    margin-bottom: 0;
+    }
+
+    #offenses .offense-box {
+    border-radius: 4px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    }
+    .fixed .box-title {
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    }
+    .box-title-placeholder {
+    display: none;
+    }
+    .fixed .box-title-placeholder {
+    display: block;
+    }
+    #offenses .offense-box .box-title h3, #offenses .offense-box .box-title-placeholder h3 {
+    color: #33353f;
+    background-color: #f6f6f6;
+    font-size: 2rem;
+    line-height: 2rem;
+    display: block;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 0;
+    }
+    #offenses .offense-box .offense-reports  {
+    padding: 0 15px;
+    }
+    #offenses .offense-box .offense-reports .report {
+    border-bottom: 1px dotted #ddd;
+    padding: 15px 0px;
+    position: relative;
+    font-size: 1.3rem;
+    }
+    #offenses .offense-box .offense-reports .report:last-child {
+    border-bottom: none;
+    }
+    #offenses .offense-box .offense-reports .report pre code {
+    display: block;
+    background: #000;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    line-height: 1.6rem;
+    }
+    #offenses .offense-box .offense-reports .report .location {
+    font-weight: bold;
+    }
+    #offenses .offense-box .offense-reports .report .message code {
+    padding: 0.3em;
+    background-color: rgba(0,0,0,0.07);
+    border-radius: 3px;
+    }
+    .severity {
+    text-transform: capitalize;
+    font-weight: bold;
+    }
+    .highlight {
+    padding: 2px;
+    border-radius: 2px;
+    font-weight: bold;
+    }
+
+    .severity.refactor {
+    color: rgba(237, 156, 40, 1.0);
+    }
+    .highlight.refactor {
+    background-color: rgba(237, 156, 40, 0.6);
+    border: 1px solid rgba(237, 156, 40, 0.4);
+    }
+
+    .severity.convention {
+    color: rgba(237, 156, 40, 1.0);
+    }
+    .highlight.convention {
+    background-color: rgba(237, 156, 40, 0.6);
+    border: 1px solid rgba(237, 156, 40, 0.4);
+    }
+
+    .severity.warning {
+    color: rgba(150, 40, 239, 1.0);
+    }
+    .highlight.warning {
+    background-color: rgba(150, 40, 239, 0.6);
+    border: 1px solid rgba(150, 40, 239, 0.4);
+    }
+
+    .severity.error {
+    color: rgba(210, 50, 45, 1.0);
+    }
+    .highlight.error {
+    background-color: rgba(210, 50, 45, 0.6);
+    border: 1px solid rgba(210, 50, 45, 0.4);
+    }
+
+    .severity.fatal {
+    color: rgba(210, 50, 45, 1.0);
+    }
+    .highlight.fatal {
+    background-color: rgba(210, 50, 45, 0.6);
+    border: 1px solid rgba(210, 50, 45, 0.4);
+    }
+
+    footer {
+    margin-bottom: 20px;
+    margin-right: 20px;
+    font-size: 1.3rem;
+    color: #777;
+    text-align: right;
+    }
+    .extra-code {
+      color: #ED9C28
+    }
+    </style>
+
+    <script>
+    (function() {
+      // floating headers. requires classList support.
+      if (!('classList' in document.createElement("_"))) return;
+
+      var loaded = false,
+        boxes,
+        boxPositions;
+
+      window.onload = function() {
+        var scrollY = window.scrollY;
+        boxes = document.querySelectorAll('.offense-box');
+        boxPositions = [];
+        for (var i = 0; i < boxes.length; i++)
+          // need to add scrollY because the page might be somewhere other than the top when loaded.
+          boxPositions[i] = boxes[i].getBoundingClientRect().top + scrollY;
+        loaded = true;
+      };
+
+      window.onscroll = function() {
+        if (!loaded) return;
+        var i,
+          idx,
+          scrollY = window.scrollY;
+        for (i = 0; i < boxPositions.length; i++) {
+          if (scrollY <= boxPositions[i] - 1) {
+            idx = i;
+            break;
+          }
+        }
+        if (typeof idx == 'undefined') idx = boxes.length;
+        if (idx > 0)
+          boxes[idx - 1].classList.add('fixed');
+        for (i = 0; i < boxes.length; i++) {
+          if (i < idx) continue;
+          boxes[i].classList.remove('fixed');
+        }
+      };
+    })();
+    </script>
+  </head>
+  <body>
+    <div id="header">
+      <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEwAAABMCAYAAADHl1ErAAAKQWlDQ1BJQ0Mg
+UHJvZmlsZQAASA2dlndUU9kWh8+9N73QEiIgJfQaegkg0jtIFQRRiUmAUAKG
+hCZ2RAVGFBEpVmRUwAFHhyJjRRQLg4Ji1wnyEFDGwVFEReXdjGsJ7601896a
+/cdZ39nnt9fZZ+9917oAUPyCBMJ0WAGANKFYFO7rwVwSE8vE9wIYEAEOWAHA
+4WZmBEf4RALU/L09mZmoSMaz9u4ugGS72yy/UCZz1v9/kSI3QyQGAApF1TY8
+fiYX5QKUU7PFGTL/BMr0lSkyhjEyFqEJoqwi48SvbPan5iu7yZiXJuShGlnO
+Gbw0noy7UN6aJeGjjAShXJgl4GejfAdlvVRJmgDl9yjT0/icTAAwFJlfzOcm
+oWyJMkUUGe6J8gIACJTEObxyDov5OWieAHimZ+SKBIlJYqYR15hp5ejIZvrx
+s1P5YjErlMNN4Yh4TM/0tAyOMBeAr2+WRQElWW2ZaJHtrRzt7VnW5mj5v9nf
+Hn5T/T3IevtV8Sbsz55BjJ5Z32zsrC+9FgD2JFqbHbO+lVUAtG0GQOXhrE/v
+IADyBQC03pzzHoZsXpLE4gwnC4vs7GxzAZ9rLivoN/ufgm/Kv4Y595nL7vtW
+O6YXP4EjSRUzZUXlpqemS0TMzAwOl89k/fcQ/+PAOWnNycMsnJ/AF/GF6FVR
+6JQJhIlou4U8gViQLmQKhH/V4X8YNicHGX6daxRodV8AfYU5ULhJB8hvPQBD
+IwMkbj96An3rWxAxCsi+vGitka9zjzJ6/uf6Hwtcim7hTEEiU+b2DI9kciWi
+LBmj34RswQISkAd0oAo0gS4wAixgDRyAM3AD3iAAhIBIEAOWAy5IAmlABLJB
+PtgACkEx2AF2g2pwANSBetAEToI2cAZcBFfADXALDIBHQAqGwUswAd6BaQiC
+8BAVokGqkBakD5lC1hAbWgh5Q0FQOBQDxUOJkBCSQPnQJqgYKoOqoUNQPfQj
+dBq6CF2D+qAH0CA0Bv0BfYQRmALTYQ3YALaA2bA7HAhHwsvgRHgVnAcXwNvh
+SrgWPg63whfhG/AALIVfwpMIQMgIA9FGWAgb8URCkFgkAREha5EipAKpRZqQ
+DqQbuY1IkXHkAwaHoWGYGBbGGeOHWYzhYlZh1mJKMNWYY5hWTBfmNmYQM4H5
+gqVi1bGmWCesP3YJNhGbjS3EVmCPYFuwl7ED2GHsOxwOx8AZ4hxwfrgYXDJu
+Na4Etw/XjLuA68MN4SbxeLwq3hTvgg/Bc/BifCG+Cn8cfx7fjx/GvyeQCVoE
+a4IPIZYgJGwkVBAaCOcI/YQRwjRRgahPdCKGEHnEXGIpsY7YQbxJHCZOkxRJ
+hiQXUiQpmbSBVElqIl0mPSa9IZPJOmRHchhZQF5PriSfIF8lD5I/UJQoJhRP
+ShxFQtlOOUq5QHlAeUOlUg2obtRYqpi6nVpPvUR9Sn0vR5Mzl/OX48mtk6uR
+a5Xrl3slT5TXl3eXXy6fJ18hf0r+pvy4AlHBQMFTgaOwVqFG4bTCPYVJRZqi
+lWKIYppiiWKD4jXFUSW8koGStxJPqUDpsNIlpSEaQtOledK4tE20Otpl2jAd
+Rzek+9OT6cX0H+i99AllJWVb5SjlHOUa5bPKUgbCMGD4M1IZpYyTjLuMj/M0
+5rnP48/bNq9pXv+8KZX5Km4qfJUilWaVAZWPqkxVb9UU1Z2qbapP1DBqJmph
+atlq+9Uuq43Pp893ns+dXzT/5PyH6rC6iXq4+mr1w+o96pMamhq+GhkaVRqX
+NMY1GZpumsma5ZrnNMe0aFoLtQRa5VrntV4wlZnuzFRmJbOLOaGtru2nLdE+
+pN2rPa1jqLNYZ6NOs84TXZIuWzdBt1y3U3dCT0svWC9fr1HvoT5Rn62fpL9H
+v1t/ysDQINpgi0GbwaihiqG/YZ5ho+FjI6qRq9Eqo1qjO8Y4Y7ZxivE+41sm
+sImdSZJJjclNU9jU3lRgus+0zwxr5mgmNKs1u8eisNxZWaxG1qA5wzzIfKN5
+m/krCz2LWIudFt0WXyztLFMt6ywfWSlZBVhttOqw+sPaxJprXWN9x4Zq42Oz
+zqbd5rWtqS3fdr/tfTuaXbDdFrtOu8/2DvYi+yb7MQc9h3iHvQ732HR2KLuE
+fdUR6+jhuM7xjOMHJ3snsdNJp9+dWc4pzg3OowsMF/AX1C0YctFx4bgccpEu
+ZC6MX3hwodRV25XjWuv6zE3Xjed2xG3E3dg92f24+ysPSw+RR4vHlKeT5xrP
+C16Il69XkVevt5L3Yu9q76c+Oj6JPo0+E752vqt9L/hh/QL9dvrd89fw5/rX
++08EOASsCegKpARGBFYHPgsyCRIFdQTDwQHBu4IfL9JfJFzUFgJC/EN2hTwJ
+NQxdFfpzGC4sNKwm7Hm4VXh+eHcELWJFREPEu0iPyNLIR4uNFksWd0bJR8VF
+1UdNRXtFl0VLl1gsWbPkRoxajCCmPRYfGxV7JHZyqffS3UuH4+ziCuPuLjNc
+lrPs2nK15anLz66QX8FZcSoeGx8d3xD/iRPCqeVMrvRfuXflBNeTu4f7kufG
+K+eN8V34ZfyRBJeEsoTRRJfEXYljSa5JFUnjAk9BteB1sl/ygeSplJCUoykz
+qdGpzWmEtPi000IlYYqwK10zPSe9L8M0ozBDuspp1e5VE6JA0ZFMKHNZZruY
+jv5M9UiMJJslg1kLs2qy3mdHZZ/KUcwR5vTkmuRuyx3J88n7fjVmNXd1Z752
+/ob8wTXuaw6thdauXNu5Tnddwbrh9b7rj20gbUjZ8MtGy41lG99uit7UUaBR
+sL5gaLPv5sZCuUJR4b0tzlsObMVsFWzt3WazrWrblyJe0fViy+KK4k8l3JLr
+31l9V/ndzPaE7b2l9qX7d+B2CHfc3em681iZYlle2dCu4F2t5czyovK3u1fs
+vlZhW3FgD2mPZI+0MqiyvUqvakfVp+qk6oEaj5rmvep7t+2d2sfb17/fbX/T
+AY0DxQc+HhQcvH/I91BrrUFtxWHc4azDz+ui6rq/Z39ff0TtSPGRz0eFR6XH
+wo911TvU1zeoN5Q2wo2SxrHjccdv/eD1Q3sTq+lQM6O5+AQ4ITnx4sf4H++e
+DDzZeYp9qukn/Z/2ttBailqh1tzWibakNml7THvf6YDTnR3OHS0/m/989Iz2
+mZqzymdLz5HOFZybOZ93fvJCxoXxi4kXhzpXdD66tOTSna6wrt7LgZevXvG5
+cqnbvfv8VZerZ645XTt9nX297Yb9jdYeu56WX+x+aem172296XCz/ZbjrY6+
+BX3n+l37L972un3ljv+dGwOLBvruLr57/17cPel93v3RB6kPXj/Mejj9aP1j
+7OOiJwpPKp6qP6391fjXZqm99Oyg12DPs4hnj4a4Qy//lfmvT8MFz6nPK0a0
+RupHrUfPjPmM3Xqx9MXwy4yX0+OFvyn+tveV0auffnf7vWdiycTwa9HrmT9K
+3qi+OfrW9m3nZOjk03dp76anit6rvj/2gf2h+2P0x5Hp7E/4T5WfjT93fAn8
+8ngmbWbm3/eE8/syOll+AAAACXBIWXMAAAsTAAALEwEAmpwYAAAEJGlUWHRY
+TUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9i
+ZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRm
+OlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjIt
+cmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjph
+Ym91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRv
+YmUuY29tL3RpZmYvMS4wLyIKICAgICAgICAgICAgeG1sbnM6ZXhpZj0iaHR0
+cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICAgICAgICAgIHhtbG5z
+OmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAg
+ICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAv
+Ij4KICAgICAgICAgPHRpZmY6UmVzb2x1dGlvblVuaXQ+MTwvdGlmZjpSZXNv
+bHV0aW9uVW5pdD4KICAgICAgICAgPHRpZmY6Q29tcHJlc3Npb24+NTwvdGlm
+ZjpDb21wcmVzc2lvbj4KICAgICAgICAgPHRpZmY6WFJlc29sdXRpb24+NzI8
+L3RpZmY6WFJlc29sdXRpb24+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9u
+PjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgICAgIDx0aWZmOllSZXNvbHV0
+aW9uPjcyPC90aWZmOllSZXNvbHV0aW9uPgogICAgICAgICA8ZXhpZjpQaXhl
+bFhEaW1lbnNpb24+NzY8L2V4aWY6UGl4ZWxYRGltZW5zaW9uPgogICAgICAg
+ICA8ZXhpZjpDb2xvclNwYWNlPjE8L2V4aWY6Q29sb3JTcGFjZT4KICAgICAg
+ICAgPGV4aWY6UGl4ZWxZRGltZW5zaW9uPjc2PC9leGlmOlBpeGVsWURpbWVu
+c2lvbj4KICAgICAgICAgPGRjOnN1YmplY3Q+CiAgICAgICAgICAgIDxyZGY6
+U2VxLz4KICAgICAgICAgPC9kYzpzdWJqZWN0PgogICAgICAgICA8eG1wOk1v
+ZGlmeURhdGU+MjAxNDowOToyMyAyMjowOToxNDwveG1wOk1vZGlmeURhdGU+
+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+UGl4ZWxtYXRvciAzLjIuMTwv
+eG1wOkNyZWF0b3JUb29sPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAg
+PC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KkpvroQAABkNJREFUeAHtm0uIHFUY
+hWveM8ZpHN/RYCIS34mKGGSMMmLA6CKILmQwBOJCEcwqKzELceVWN+IyIgQM
+4gt84SMqBpNBkBiJGkEFMRFNMmSSzEzm5fmG7qEpbt1bt7q6XuOBQ3Xfuvf/
+z/nr3qrq6u6OIH9cLAlrxGvr20e0vVsE34rviL+Lv9W3J7XNDR05Zb5deR8U
+7xfXiVeKnaIN89p5XPxB/EL8WPxerCxqcrZd3CdOiwstkhj7RGISuzLol5On
+xSNiq0WKGk9scpCr1LhP6veLUUbTbicXOUuHHil+QZwS0y6KKx45yY2GUuAy
+qXxXdBlr9340oKXQWC11Y2K7ixE3PlrQVEhcI1WHxLhmsuqHJrQVCtx8cpOZ
+VRF886ANjYVAl1TsFX1NZN0fjWjNHTulIGvzSfOhNVfcpuwTYlIDWY9DK5pz
+AdP7EzFr063mQ3MuS/PREharUWy0Zwruog+IDQFl26I9008Cm0tcrMbBxYM3
+XM+gogI+GbWjRO2ZebhKRTklNo5UWbd4wIsXksywEWW4yCtLMTvjYcRXWpKC
+bfJNUuD+3l58C9Yt83cWuAC+0vCCp7aBT/3nxbKet8K68eL1JMO3unzLtFtk
+WwVQwKp4Kebx8KnurbLwjLhBHCimHW9VkxpxUHxVPOw92jJgi/bxjXP4HFCV
+93jDYypYrSj/iFUpTpQPPK4RrYhzW7FVES61RqnGTjw+4bISp2B3uIJUaL/T
+a5yC9VaoIC4rTq9xCjbrylKh/U6vroLdpGKsr1BBXFbwiudE4NP8j2LUVaWq
+7XiOfBpjm2HbNPBmcbkBz3g3wnanf1ojBo2j6o1DnZ3B6IpasL6nb/Hng0y5
+IgKT8+Khmelgz9nTwal53lnB13E1Uw9bwaz+r+jqCvZcsjIY7hsIZhdXrSl8
+sdq69Tl7//RkMHriWPD33JxLnLE2vk8rlpLsGBwKhvsHggn30Voak/+LhUXN
+aN81/m8iObZzWGRABg339QfTC9ZJGDk+zx1oRnsi4xKeaBxlmlJi45zNsxox
+cqMZ7UkPdeKCvX3uTNCrkpWpaGhFM9qTFizxOWy3rjZru3uD7RfWgoGOcpRt
+UjPrlYnxAO1JYXN6QEF5WGgFtxQ39vQGXbZI1gjZ7JzTlPpp5vzirUWMjGPq
+4/QejjOiBmbuciTevcH57TWRu7zlUjS84jnRuV3jFr+z+1Lb5VKwr+qe8W6E
+q5I87jhpHFnNxhOyZX3E4yoYZcnl13o5HQ+n1zgFS34Nzsl1C2mdXuMU7PMW
+BJRtaCpeecTDfUnVT/x4tD7O8jn616nz1xUuGt7w6ITP/Xmfoj0s8n/sFSIz
+Low4Szw8Jov33F+FgfezIn+r+UDkH77/I+0K+MywRm7+0P6hGF7vM2rbIh4V
+i4S1EvOeGP6ZOY+hHxKPi7GR5GkFYxDBsmwGS5RlWzSg6QYxPDlYjt7+vQfU
+q2G6G6bNdF6rD1naPKZXHNk0wEx/yxEITWgLzzCTB0eoBBV2RrR3eEC7Xxcv
+sHeLvXdUPcfFz2KPaLFjllc1foD7hphWsbBOLGISOxMkXZJJxLEMuWAALuEY
+PcebBKBQW0XOT8Qk9ndiIbFKqlgGnBuayS+SbxGj0KUdz4sUaUdUJ492YhCL
+mMSOAppMv/zGA17ajqQFawhj+YSvWI19PltixFmKqRYsyyXZKEZaS4fZnVas
+hjbnNo+ChUVtVMP1omvWUaCfxW/EUuFqqTX9m21W7es8nTyl/oxrPhfaXtOX
+MT5AkykHHvDSdgwpw1+iyRgfjeLiHnU8I5ri2NoYw9i4QJMpHh7w0nZw7zYm
+mkS8GTP7SvX7JSKGKW64jbHEiIO96hQez3s8ZHYf+nKECKb+NtEGzpvviyYT
+Pm3EcJ2D0WJajuTBQ2bYqEz8wMpkcErtu8TLxTC4X3pJNI1L0kYs0z0YudGA
+FlNctOPBG64rU1RARH4kborqoPZj4mGx8cUCuVaJG8Q0cVDB/hQpDKiJ/C/K
+tmQ/1f7NovNXdeqTGu5SJB6RmI5gkdvQjPZc8KyyFrk4Jm1ozhXPKTvPzE3i
+itSGRrQWAo9LxR9ikQrUrAVtaCwUOMm+KB4Vm8Xm+RotaLJdALQ7Xwwq/b3i
+TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
+" alt="">
+      <h1 class="title">RuboCop Inspection Report</h1>
+    </div>
+    <div class="information">
+      <div class="infobox">
+        <div class="total">
+          53 files inspected,
+          192 offenses detected:
+        </div>
+        <ul class="offenses-list">
+          
+            
+            <li>
+              <a href="#offense_Gemfile">
+                Gemfile - 6 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_Rakefile">
+                Rakefile - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/channels/application_cable/channel.rb">
+                app/channels/application_cable/channel.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/channels/application_cable/connection.rb">
+                app/channels/application_cable/connection.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/controllers/application_controller.rb">
+                app/controllers/application_controller.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/controllers/courses_controller.rb">
+                app/controllers/courses_controller.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/controllers/registrations_controller.rb">
+                app/controllers/registrations_controller.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/controllers/sessions_controller.rb">
+                app/controllers/sessions_controller.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/helpers/application_helper.rb">
+                app/helpers/application_helper.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/jobs/application_job.rb">
+                app/jobs/application_job.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/mailers/application_mailer.rb">
+                app/mailers/application_mailer.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/application_record.rb">
+                app/models/application_record.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/course.rb">
+                app/models/course.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/models/user.rb">
+                app/models/user.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/uploaders/base_uploader.rb">
+                app/uploaders/base_uploader.rb - 11 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_app/uploaders/course_image_uploader.rb">
+                app/uploaders/course_image_uploader.rb - 6 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_bin/bundle">
+                bin/bundle - 32 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_bin/rails">
+                bin/rails - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_bin/rake">
+                bin/rake - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_bin/setup">
+                bin/setup - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_bin/spring">
+                bin/spring - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_bin/webpack">
+                bin/webpack - 14 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_bin/webpack-dev-server">
+                bin/webpack-dev-server - 14 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_bin/yarn">
+                bin/yarn - 7 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config.ru">
+                config.ru - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/application.rb">
+                config/application.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/boot.rb">
+                config/boot.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/environment.rb">
+                config/environment.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/environments/development.rb">
+                config/environments/development.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/environments/production.rb">
+                config/environments/production.rb - 5 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/environments/test.rb">
+                config/environments/test.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/initializers/application_controller_renderer.rb">
+                config/initializers/application_controller_renderer.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/initializers/assets.rb">
+                config/initializers/assets.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/initializers/backtrace_silencers.rb">
+                config/initializers/backtrace_silencers.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/initializers/content_security_policy.rb">
+                config/initializers/content_security_policy.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/initializers/cookies_serializer.rb">
+                config/initializers/cookies_serializer.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/initializers/filter_parameter_logging.rb">
+                config/initializers/filter_parameter_logging.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/initializers/inflections.rb">
+                config/initializers/inflections.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/initializers/mime_types.rb">
+                config/initializers/mime_types.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/initializers/session_store.rb">
+                config/initializers/session_store.rb - 4 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/initializers/wrap_parameters.rb">
+                config/initializers/wrap_parameters.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/puma.rb">
+                config/puma.rb - 10 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/routes.rb">
+                config/routes.rb - 3 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_config/spring.rb">
+                config/spring.rb - 5 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_db/migrate/20201206172655_create_courses.rb">
+                db/migrate/20201206172655_create_courses.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_db/migrate/20201207093215_add_image_to_course.rb">
+                db/migrate/20201207093215_add_image_to_course.rb - 3 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_db/migrate/20201216165907_create_users.rb">
+                db/migrate/20201216165907_create_users.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_db/migrate/20201218182513_add_sessions_table.rb">
+                db/migrate/20201218182513_add_sessions_table.rb - 4 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_db/schema.rb">
+                db/schema.rb - 14 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_db/seeds.rb">
+                db/seeds.rb - 1 offense
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_test/application_system_test_case.rb">
+                test/application_system_test_case.rb - 2 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_test/channels/application_cable/connection_test.rb">
+                test/channels/application_cable/connection_test.rb - 3 offenses
+              </a>
+            </li>
+          
+            
+            <li>
+              <a href="#offense_test/test_helper.rb">
+                test/test_helper.rb - 2 offenses
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+    </div>
+    <div id="offenses">
+      
+      
+      <div class="offense-box" id="offense_Gemfile">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>Gemfile - 6 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">s</span>ource &#39;https://rubygems.org&#39;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #29</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Bundler/OrderedGems: Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem <code>hamlit</code> should appear before <code>simple_form</code>.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">gem &#39;hamlit&#39;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #34</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Bundler/OrderedGems: Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem <code>activerecord-session_store</code> should appear before <code>mini_magick</code>.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">gem &#39;activerecord-session_store&#39;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #42</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/SymbolArray: Use <code>%i</code> or <code>%I</code> for an array of symbols.</span>
+            </div>
+            
+            <pre><code>  gem &#39;byebug&#39;, platforms: <span class="highlight convention">[:mri, :mingw, :x64_mingw]</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #48</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Bundler/OrderedGems: Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem <code>listen</code> should appear before <code>web-console</code>.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">gem &#39;listen&#39;, &#39;~&gt; 3.2&#39;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #63</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/SymbolArray: Use <code>%i</code> or <code>%I</code> for an array of symbols.</span>
+            </div>
+            
+            <pre><code>gem &#39;tzinfo-data&#39;, platforms: <span class="highlight convention">[:mingw, :mswin, :x64_mingw, :jruby]</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_Rakefile">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>Rakefile - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> Add your own tasks in files placed in lib/tasks ending in .rake,</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/channels/application_cable/channel.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/channels/application_cable/channel.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">m</span>odule ApplicationCable</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/channels/application_cable/connection.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/channels/application_cable/connection.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">m</span>odule ApplicationCable</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/controllers/application_controller.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/controllers/application_controller.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/Documentation: Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">class</span> ApplicationController &lt; ActionController::Base</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass ApplicationController &lt; ActionController::Base</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/controllers/courses_controller.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/controllers/courses_controller.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/Documentation: Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">class</span> CoursesController &lt; ApplicationController</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass CoursesController &lt; ApplicationController</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/controllers/registrations_controller.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/controllers/registrations_controller.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/Documentation: Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">class</span> RegistrationsController &lt; ApplicationController</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass RegistrationsController &lt; ApplicationController</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/controllers/sessions_controller.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/controllers/sessions_controller.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/Documentation: Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">class</span> SessionsController &lt; ApplicationController</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass SessionsController &lt; ApplicationController</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/helpers/application_helper.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/helpers/application_helper.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/Documentation: Missing top-level module documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">module</span> ApplicationHelper</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">m</span>odule ApplicationHelper</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/jobs/application_job.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/jobs/application_job.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass ApplicationJob &lt; ActiveJob::Base</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/mailers/application_mailer.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/mailers/application_mailer.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass ApplicationMailer &lt; ActionMailer::Base</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/models/application_record.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/models/application_record.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/Documentation: Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">class</span> ApplicationRecord &lt; ActiveRecord::Base</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass ApplicationRecord &lt; ActiveRecord::Base</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/models/course.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/models/course.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass Course &lt; ApplicationRecord</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/models/user.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/models/user.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">r</span>equire &#39;digest/md5&#39;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/Documentation: Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">class</span> User &lt; ApplicationRecord</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/uploaders/base_uploader.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/uploaders/base_uploader.rb - 11 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/Documentation: Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">class</span> BaseUploader &lt; CarrierWave::Uploader::Base</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass BaseUploader &lt; CarrierWave::Uploader::Base</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">    </span>include CarrierWave::MiniMagick</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">    </span>def store_dir</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #9</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">    </span>def default_url</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #10</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringConcatenation: Prefer string interpolation to string concatenation.</span>
+            </div>
+            
+            <pre><code>      ActionController::Base.helpers.asset_path <span class="highlight convention">&#39;fallback/&#39; + [model.class.to_s.underscore, mounted_as, version_name, &quot;default.jpg&quot;].compact.join(&#39;_&#39;)</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #10</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>      ActionController::Base.helpers.asset_path &#39;fallback/&#39; + [model.class.to_s.underscore, mounted_as, version_name, <span class="highlight convention">&quot;default.jpg&quot;</span>].compact.join(&#39;_&#39;)</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #10</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/LineLength: Line is too long. [150/120]</span>
+            </div>
+            
+            <pre><code>      ActionController::Base.helpers.asset_path &#39;fallback/&#39; + [model.class.to_s.underscore, mounted_as, version_name, &quot;d<span class="highlight convention">efault.jpg&quot;].compact.join(&#39;_&#39;)</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #13</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">    </span>def extension_white_list</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #14</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/PercentLiteralDelimiters: <code>%w</code>-literals should be delimited by <code>[</code> and <code>]</code>.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">%w(jpg jpeg png)</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #16</span> –
+              <span class="severity warning">warning:</span>
+              <span class="message">Layout/EndAlignment: <code>end</code> at 16, 3 is not aligned with <code>class</code> at 1, 0.</span>
+            </div>
+            
+            <pre><code>   <span class="highlight warning">end</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_app/uploaders/course_image_uploader.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>app/uploaders/course_image_uploader.rb - 6 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass CourseImageUploader &lt; BaseUploader</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">    </span>version :thumb do</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/BlockAlignment: <code>end</code> at 4, 6 is not aligned with <code>version :thumb do</code> at 2, 4.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">end</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #5</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">    </span>version :thumb_small do</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/BlockAlignment: <code>end</code> at 7, 6 is not aligned with <code>version :thumb_small do</code> at 5, 4.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">end</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #8</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/EmptyLinesAroundClassBody: Extra empty line detected at class body end.</span>
+            </div>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_bin/bundle">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>bin/bundle - 32 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #11</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require <span class="highlight convention">&quot;rubygems&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #17</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/SpecialGlobalVars: Prefer <code>$PROGRAM_NAME</code> over <code>$0</code>.</span>
+            </div>
+            
+            <pre><code>    File.expand_path(<span class="highlight convention">$0</span>) == File.expand_path(__FILE__)</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #21</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    ENV[<span class="highlight convention">&quot;BUNDLER_VERSION&quot;</span>]</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #24</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Metrics/CyclomaticComplexity: Cyclomatic complexity for cli_arg_version is too high. [9/7]</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">def cli_arg_version</span> <span class="extra-code">...</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #24</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Metrics/MethodLength: Method has too many lines. [13/10]</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">def cli_arg_version</span> <span class="extra-code">...</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #24</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Metrics/PerceivedComplexity: Perceived complexity for cli_arg_version is too high. [9/8]</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">def cli_arg_version</span> <span class="extra-code">...</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #26</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/EmptyLineAfterGuardClause: Add empty line after guard clause.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">return unless &quot;update&quot;.start_with?(ARGV.first || &quot; &quot;)</span> # must be running `bundle update`</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #26</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    return unless <span class="highlight convention">&quot;update&quot;</span>.start_with?(ARGV.first || &quot; &quot;) # must be running `bundle update`</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #26</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    return unless &quot;update&quot;.start_with?(ARGV.first || <span class="highlight convention">&quot; &quot;</span>) # must be running `bundle update`</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #30</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/IfUnlessModifier: Favor modifier <code>if</code> usage when having a single-line body. Another good alternative is the usage of control flow <code>&&</code>/<code>||</code>.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">if</span> update_index &amp;&amp; update_index.succ == i &amp;&amp; a =~ Gem::Version::ANCHORED_VERSION_PATTERN</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #33</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/EmptyLineAfterGuardClause: Add empty line after guard clause.</span>
+            </div>
+            
+            <pre><code>      <span class="highlight convention">next unless a =~ /\A--bundler(?:[= ](#{Gem::Version::VERSION_PATTERN}))?\z/</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #34</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/PerlBackrefs: Prefer <code>Regexp.last_match(1)</code> over <code>$1</code>.</span>
+            </div>
+            
+            <pre><code>      bundler_version = <span class="highlight convention">$1</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #41</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    gemfile = ENV[<span class="highlight convention">&quot;BUNDLE_GEMFILE&quot;</span>]</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #44</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/ExpandPathArguments: Use <code>expand_path('../Gemfile', __dir__)</code> instead of <code>expand_path('../../Gemfile', __FILE__)</code>.</span>
+            </div>
+            
+            <pre><code>    File.<span class="highlight convention">expand_path</span>(&quot;../../Gemfile&quot;, __FILE__)</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #44</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    File.expand_path(<span class="highlight convention">&quot;../../Gemfile&quot;</span>, __FILE__)</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #50</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>      when <span class="highlight convention">&quot;gems.rb&quot;</span> then gemfile.sub(/\.rb$/, gemfile)</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #57</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/EmptyLineAfterGuardClause: Add empty line after guard clause.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">return unless File.file?(lockfile)</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #59</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/EmptyLineAfterGuardClause: Add empty line after guard clause.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">return unless lockfile_contents =~ /\n\nBUNDLED WITH\n\s{2,}(#{Gem::Version::VERSION_PATTERN})\n/</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #66</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/MultilineOperationIndentation: Align the operands of an expression in an assignment spanning multiple lines.</span>
+            </div>
+            
+            <pre><code>        <span class="highlight convention">lockfile_version</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #76</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    return requirement unless Gem::Version.new(Gem::VERSION) &lt; Gem::Version.new(<span class="highlight convention">&quot;2.7.0&quot;</span>)</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #78</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    requirement += <span class="highlight convention">&quot;.a&quot;</span> if bundler_gem_version.prerelease?</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #84</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    ENV[<span class="highlight convention">&quot;BUNDLE_GEMFILE&quot;</span>] ||= gemfile</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #91</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>      gem <span class="highlight convention">&quot;bundler&quot;</span>, bundler_requirement</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #93</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/EmptyLineAfterGuardClause: Add empty line after guard clause.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">return if gem_error.nil?</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #95</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>      require <span class="highlight convention">&quot;bundler/version&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #97</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/EmptyLineAfterGuardClause: Add empty line after guard clause.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">return if require_error.nil? &amp;&amp; Gem::Requirement.new(bundler_requirement).satisfied_by?(Gem::Version.new(Bundler::VERSION))</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #97</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/IfUnlessModifier: Modifier form of <code>if</code> makes the line too long.</span>
+            </div>
+            
+            <pre><code>    return <span class="highlight convention">if</span> require_error.nil? &amp;&amp; Gem::Requirement.new(bundler_requirement).satisfied_by?(Gem::Version.new(Bundler::VERSION))</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #97</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/LineLength: Line is too long. [127/120]</span>
+            </div>
+            
+            <pre><code>    return if require_error.nil? &amp;&amp; Gem::Requirement.new(bundler_requirement).satisfied_by?(Gem::Version.new(Bundler::VE<span class="highlight convention">RSION))</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #98</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/LineLength: Line is too long. [198/120]</span>
+            </div>
+            
+            <pre><code>    warn &quot;Activating bundler (#{bundler_requirement}) failed:\n#{gem_error.message}\n\nTo install the version of bundler<span class="highlight convention"> this project requires, run `gem install bundler -v &#39;#{bundler_requirement}&#39;`&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #112</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/IfUnlessModifier: Favor modifier <code>if</code> usage when having a single-line body. Another good alternative is the usage of control flow <code>&&</code>/<code>||</code>.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">if</span> m.invoked_as_script?</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #113</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>  load Gem.bin_path(<span class="highlight convention">&quot;bundler&quot;</span>, &quot;bundle&quot;)</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #113</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>  load Gem.bin_path(&quot;bundler&quot;, <span class="highlight convention">&quot;bundle&quot;</span>)</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_bin/rails">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>bin/rails - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span>!/usr/bin/env ruby</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/ExpandPathArguments: Use <code>expand_path('spring', __dir__)</code> instead of <code>expand_path('../spring', __FILE__)</code>.</span>
+            </div>
+            
+            <pre><code>  load File.<span class="highlight convention">expand_path</span>(&#39;../spring&#39;, __FILE__)</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_bin/rake">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>bin/rake - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span>!/usr/bin/env ruby</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/ExpandPathArguments: Use <code>expand_path('spring', __dir__)</code> instead of <code>expand_path('../spring', __FILE__)</code>.</span>
+            </div>
+            
+            <pre><code>  load File.<span class="highlight convention">expand_path</span>(&#39;../spring&#39;, __FILE__)</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_bin/setup">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>bin/setup - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span>!/usr/bin/env ruby</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_bin/spring">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>bin/spring - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span>!/usr/bin/env ruby</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_bin/webpack">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>bin/webpack - 14 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span>!/usr/bin/env ruby</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[<span class="highlight convention">&quot;RAILS_ENV&quot;</span>] ||= ENV[&quot;RACK_ENV&quot;] || &quot;development&quot;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[&quot;RAILS_ENV&quot;] ||= ENV[<span class="highlight convention">&quot;RACK_ENV&quot;</span>] || &quot;development&quot;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[&quot;RAILS_ENV&quot;] ||= ENV[&quot;RACK_ENV&quot;] || <span class="highlight convention">&quot;development&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[<span class="highlight convention">&quot;NODE_ENV&quot;</span>]  ||= &quot;development&quot;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[&quot;NODE_ENV&quot;]  ||= <span class="highlight convention">&quot;development&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #6</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require <span class="highlight convention">&quot;pathname&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[<span class="highlight convention">&quot;BUNDLE_GEMFILE&quot;</span>] ||= File.expand_path(&quot;../../Gemfile&quot;,</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[&quot;BUNDLE_GEMFILE&quot;] ||= File.expand_path(<span class="highlight convention">&quot;../../Gemfile&quot;</span>,</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #8</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/ArgumentAlignment: Align the arguments of a method call if they span more than one line.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">Pathname.new(__FILE__).realpath</span>)</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #10</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require <span class="highlight convention">&quot;bundler/setup&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #12</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require <span class="highlight convention">&quot;webpacker&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #13</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require <span class="highlight convention">&quot;webpacker/webpack_runner&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #15</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>APP_ROOT = File.expand_path(<span class="highlight convention">&quot;..&quot;</span>, __dir__)</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_bin/webpack-dev-server">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>bin/webpack-dev-server - 14 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span>!/usr/bin/env ruby</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[<span class="highlight convention">&quot;RAILS_ENV&quot;</span>] ||= ENV[&quot;RACK_ENV&quot;] || &quot;development&quot;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[&quot;RAILS_ENV&quot;] ||= ENV[<span class="highlight convention">&quot;RACK_ENV&quot;</span>] || &quot;development&quot;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[&quot;RAILS_ENV&quot;] ||= ENV[&quot;RACK_ENV&quot;] || <span class="highlight convention">&quot;development&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[<span class="highlight convention">&quot;NODE_ENV&quot;</span>]  ||= &quot;development&quot;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[&quot;NODE_ENV&quot;]  ||= <span class="highlight convention">&quot;development&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #6</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require <span class="highlight convention">&quot;pathname&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[<span class="highlight convention">&quot;BUNDLE_GEMFILE&quot;</span>] ||= File.expand_path(&quot;../../Gemfile&quot;,</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>ENV[&quot;BUNDLE_GEMFILE&quot;] ||= File.expand_path(<span class="highlight convention">&quot;../../Gemfile&quot;</span>,</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #8</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/ArgumentAlignment: Align the arguments of a method call if they span more than one line.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">Pathname.new(__FILE__).realpath</span>)</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #10</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require <span class="highlight convention">&quot;bundler/setup&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #12</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require <span class="highlight convention">&quot;webpacker&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #13</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require <span class="highlight convention">&quot;webpacker/dev_server_runner&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #15</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>APP_ROOT = File.expand_path(<span class="highlight convention">&quot;..&quot;</span>, __dir__)</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_bin/yarn">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>bin/yarn - 7 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span>!/usr/bin/env ruby</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/RedundantBegin: Redundant <code>begin</code> block detected.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">begin</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #5</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    exec <span class="highlight convention">&quot;yarnpkg&quot;</span>, *ARGV</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StderrPuts: Use <code>warn</code> instead of <code>$stderr.puts</code> to allow such output to be disabled.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">$stderr.puts</span> &quot;Yarn executable was not detected in the system.&quot;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    $stderr.puts <span class="highlight convention">&quot;Yarn executable was not detected in the system.&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #8</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StderrPuts: Use <code>warn</code> instead of <code>$stderr.puts</code> to allow such output to be disabled.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">$stderr.puts</span> &quot;Download Yarn at https://yarnpkg.com/en/docs/install&quot;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #8</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    $stderr.puts <span class="highlight convention">&quot;Download Yarn at https://yarnpkg.com/en/docs/install&quot;</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config.ru">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config.ru - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> This file is used by Rack-based servers to start the application.</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/application.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/application.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">r</span>equire_relative &#39;boot&#39;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #10</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/Documentation: Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">class</span> Application &lt; Rails::Application</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/boot.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/boot.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">E</span>NV[&#39;BUNDLE_GEMFILE&#39;] ||= File.expand_path(&#39;../Gemfile&#39;, __dir__)</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/environment.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/environment.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> Load the Rails application.</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/environments/development.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/environments/development.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">R</span>ails.application.configure do</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/environments/production.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/environments/production.rb - 5 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">R</span>ails.application.configure do</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #54</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/SpaceInsideArrayLiteralBrackets: Do not use space inside array brackets.</span>
+            </div>
+            
+            <pre><code>  config.log_tags = [<span class="highlight convention"> </span>:request_id ]</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #54</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/SpaceInsideArrayLiteralBrackets: Do not use space inside array brackets.</span>
+            </div>
+            
+            <pre><code>  config.log_tags = [ :request_id<span class="highlight convention"> </span>]</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #83</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>  if ENV[<span class="highlight convention">&quot;RAILS_LOG_TO_STDOUT&quot;</span>].present?</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #84</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/GlobalStdStream: Use <code>$stdout</code> instead of <code>STDOUT</code>.</span>
+            </div>
+            
+            <pre><code>    logger           = ActiveSupport::Logger.new(<span class="highlight convention">STDOUT</span>)</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/environments/test.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/environments/test.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> The test environment is used exclusively to run your application&#39;s</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/initializers/application_controller_renderer.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/initializers/application_controller_renderer.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> Be sure to restart your server when you modify this file.</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/initializers/assets.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/initializers/assets.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> Be sure to restart your server when you modify this file.</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/initializers/backtrace_silencers.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/initializers/backtrace_silencers.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> Be sure to restart your server when you modify this file.</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/initializers/content_security_policy.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/initializers/content_security_policy.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> Be sure to restart your server when you modify this file.</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/initializers/cookies_serializer.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/initializers/cookies_serializer.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> Be sure to restart your server when you modify this file.</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/initializers/filter_parameter_logging.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/initializers/filter_parameter_logging.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> Be sure to restart your server when you modify this file.</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/initializers/inflections.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/initializers/inflections.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> Be sure to restart your server when you modify this file.</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/initializers/mime_types.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/initializers/mime_types.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> Be sure to restart your server when you modify this file.</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/initializers/session_store.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/initializers/session_store.rb - 4 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">R</span>ails.application.config.session_store :redis_session_store, {</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/FirstHashElementIndentation: Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">key: &#39;course_session_key&#39;</span>,</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/TrailingCommaInHashLiteral: Avoid comma after the last item of a hash.</span>
+            </div>
+            
+            <pre><code>      url: &#39;redis://localhost:6379/0&#39;<span class="highlight convention">,</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #9</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/FirstHashElementIndentation: Indent the right brace the same as the start of the line where the left brace is.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">}</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/initializers/wrap_parameters.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/initializers/wrap_parameters.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> Be sure to restart your server when you modify this file.</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/puma.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/puma.rb - 10 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> Puma can serve each request in a thread from an internal thread pool.</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/RedundantFetchBlock: Use <code>fetch("RAILS_MAX_THREADS", 5)</code> instead of <code>fetch("RAILS_MAX_THREADS") { 5 }</code>.</span>
+            </div>
+            
+            <pre><code>max_threads_count = ENV.<span class="highlight convention">fetch(&quot;RAILS_MAX_THREADS&quot;) { 5 }</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #7</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>max_threads_count = ENV.fetch(<span class="highlight convention">&quot;RAILS_MAX_THREADS&quot;</span>) { 5 }</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #8</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>min_threads_count = ENV.fetch(<span class="highlight convention">&quot;RAILS_MIN_THREADS&quot;</span>) { max_threads_count }</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #13</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/RedundantFetchBlock: Use <code>fetch("PORT", 3000)</code> instead of <code>fetch("PORT") { 3000 }</code>.</span>
+            </div>
+            
+            <pre><code>port        ENV.<span class="highlight convention">fetch(&quot;PORT&quot;) { 3000 }</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #13</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>port        ENV.fetch(<span class="highlight convention">&quot;PORT&quot;</span>) { 3000 }</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #17</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>environment ENV.fetch(<span class="highlight convention">&quot;RAILS_ENV&quot;</span>) { &quot;development&quot; }</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #17</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>environment ENV.fetch(&quot;RAILS_ENV&quot;) { <span class="highlight convention">&quot;development&quot;</span> }</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #20</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>pidfile ENV.fetch(<span class="highlight convention">&quot;PIDFILE&quot;</span>) { &quot;tmp/pids/server.pid&quot; }</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #20</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>pidfile ENV.fetch(&quot;PIDFILE&quot;) { <span class="highlight convention">&quot;tmp/pids/server.pid&quot;</span> }</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/routes.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/routes.rb - 3 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">R</span>ails.application.routes.draw do</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #5</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/SymbolArray: Use <code>%i</code> or <code>%I</code> for an array of symbols.</span>
+            </div>
+            
+            <pre><code>  resource :registrations, only: <span class="highlight convention">[:new, :create]</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #6</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/SymbolArray: Use <code>%i</code> or <code>%I</code> for an array of symbols.</span>
+            </div>
+            
+            <pre><code>  resource :sessions, only: <span class="highlight convention">[:new, :create, :destroy]</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_config/spring.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>config/spring.rb - 5 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">S</span>pring.watch(</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">&quot;.ruby-version&quot;</span>,</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">&quot;.rbenv-vars&quot;</span>,</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">&quot;tmp/restart.txt&quot;</span>,</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #5</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>  <span class="highlight convention">&quot;tmp/caching-dev.txt&quot;</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_db/migrate/20201206172655_create_courses.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>db/migrate/20201206172655_create_courses.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/Documentation: Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">class</span> CreateCourses &lt; ActiveRecord::Migration[6.0]</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass CreateCourses &lt; ActiveRecord::Migration[6.0]</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_db/migrate/20201207093215_add_image_to_course.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>db/migrate/20201207093215_add_image_to_course.rb - 3 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/Documentation: Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">class</span> AddImageToCourse &lt; ActiveRecord::Migration[6.0]</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass AddImageToCourse &lt; ActiveRecord::Migration[6.0]</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/LeadingCommentSpace: Missing space after <code>#</code>.</span>
+            </div>
+            
+            <pre><code>    <span class="highlight convention">#Ex:- add_column(&quot;admin_users&quot;, &quot;username&quot;, :string, :limit =&gt;25, :after =&gt; &quot;email&quot;)</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_db/migrate/20201216165907_create_users.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>db/migrate/20201216165907_create_users.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/Documentation: Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">class</span> CreateUsers &lt; ActiveRecord::Migration[6.0]</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass CreateUsers &lt; ActiveRecord::Migration[6.0]</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_db/migrate/20201218182513_add_sessions_table.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>db/migrate/20201218182513_add_sessions_table.rb - 4 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/Documentation: Missing top-level class documentation comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">class</span> AddSessionsTable &lt; ActiveRecord::Migration[6.0]</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">c</span>lass AddSessionsTable &lt; ActiveRecord::Migration[6.0]</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #4</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/HashSyntax: Use the new Ruby 1.9 hash syntax.</span>
+            </div>
+            
+            <pre><code>      t.string :session_id, <span class="highlight convention">:null =&gt;</span> false</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #9</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/HashSyntax: Use the new Ruby 1.9 hash syntax.</span>
+            </div>
+            
+            <pre><code>    add_index :sessions, :session_id, <span class="highlight convention">:unique =&gt;</span> true</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_db/schema.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>db/schema.rb - 14 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> This file is auto-generated from the current state of the database. Instead</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #13</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/NumericLiterals: Use underscores(_) as thousands separator and separate every 3 digits with them.</span>
+            </div>
+            
+            <pre><code>ActiveRecord::Schema.define(version: <span class="highlight convention">2020_12_16_165907</span>) do</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #14</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/EmptyLinesAroundBlockBody: Extra empty line detected at block body beginning.</span>
+            </div>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #15</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>  create_table <span class="highlight convention">&quot;courses&quot;</span>, force: :cascade do |t|</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #16</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    t.string <span class="highlight convention">&quot;title&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #17</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    t.datetime <span class="highlight convention">&quot;created_at&quot;</span>, precision: 6, null: false</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #18</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    t.datetime <span class="highlight convention">&quot;updated_at&quot;</span>, precision: 6, null: false</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #19</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    t.string <span class="highlight convention">&quot;image&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #22</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>  create_table <span class="highlight convention">&quot;users&quot;</span>, force: :cascade do |t|</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #23</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    t.string <span class="highlight convention">&quot;email&quot;</span>, null: false</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #24</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    t.string <span class="highlight convention">&quot;encrypted_password&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #25</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    t.datetime <span class="highlight convention">&quot;created_at&quot;</span>, precision: 6, null: false</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #26</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>    t.datetime <span class="highlight convention">&quot;updated_at&quot;</span>, precision: 6, null: false</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #28</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Layout/EmptyLinesAroundBlockBody: Extra empty line detected at block body end.</span>
+            </div>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_db/seeds.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>db/seeds.rb - 1 offense</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">#</span> This file should contain all the record creation needed to seed the database with its default values.</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_test/application_system_test_case.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>test/application_system_test_case.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">r</span>equire &quot;test_helper&quot;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require <span class="highlight convention">&quot;test_helper&quot;</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_test/channels/application_cable/connection_test.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>test/channels/application_cable/connection_test.rb - 3 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">r</span>equire &quot;test_helper&quot;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.</span>
+            </div>
+            
+            <pre><code>require <span class="highlight convention">&quot;test_helper&quot;</span></code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/ClassAndModuleChildren: Use nested module/class definitions instead of compact style.</span>
+            </div>
+            
+            <pre><code>class <span class="highlight convention">ApplicationCable::ConnectionTest</span> &lt; ActionCable::Connection::TestCase</code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box" id="offense_test/test_helper.rb">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
+        <div class="box-title"><h3>test/test_helper.rb - 2 offenses</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
+            </div>
+            
+            <pre><code><span class="highlight convention">E</span>NV[&#39;RAILS_ENV&#39;] ||= &#39;test&#39;</code></pre>
+            
+          </div>
+          
+          <div class="report">
+            <div class="meta">
+              <span class="location">Line #5</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Style/ClassAndModuleChildren: Use nested module/class definitions instead of compact style.</span>
+            </div>
+            
+            <pre><code>class <span class="highlight convention">ActiveSupport::TestCase</span></code></pre>
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+    <footer>
+      Generated by <a href="https://github.com/rubocop-hq/rubocop">RuboCop</a>
+      <span class="version">1.6.1</span>
+    </footer>
+  </body>
+</html>

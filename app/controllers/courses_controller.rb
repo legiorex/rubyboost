@@ -1,53 +1,46 @@
 class CoursesController < ApplicationController
-
-    before_action :find_course, only: [:edit, :update, :destroy]
-
-def index
+  def index
     @courses = Course.all.page(params[:page]).per(5)
-end
+  end
 
-def new
+  def new
     @course = Course.new
-end
+  end
 
-def create
+  def create
     @course = Course.new course_params
 
     if @course.save
-        redirect_to courses_path
+      redirect_to courses_path
     else
-        render :new
+      render :new
     end
-end
+  end
 
-def edit
-end
+  def edit; end
 
-def update
-
-    if @course.update course_params
-        redirect_to courses_path
+  def update
+    if course.update course_params
+      redirect_to courses_path
     else
-        render :edit
+      render :edit
     end
-end
+  end
 
-def destroy
-    @course.destroy
+  def destroy
+    course.destroy
 
     redirect_to courses_path
-end
+  end
 
+  private
 
-private
-
-def course_params
+  def course_params
     params.require(:course).permit(:title, :image)
+  end
 
-end
-
-def find_course
-    @course = Course.find(params[:id])
-end
-
+  def course
+    @course ||= Course.find(params[:id])
+  end
+  helper_method :course
 end

@@ -1,7 +1,5 @@
 class Course < ApplicationRecord
-validates :title, presence: true, length: {minimum:3}
+  validates :title, presence: true, length: { minimum: 3 }
 
-mount_uploader :image, CourseImageUploader
-
-
+  mount_uploader :image, CourseImageUploader
 end

@@ -1,13 +1,13 @@
 <h1>Courses</h1>
 <%= link_to 'New Course', new_course_url %>
 <ul>
-    <% @courses.each do |course| %>
+  <% @courses.each do |course| %>
     <li>
-        <%= image_tag course.image.thumb_small.url %>
-        <%= course.title %>
-        <%= link_to 'Edit', edit_course_path(course) %>
-        <%= link_to 'Delete', course_path(course), method: :delete, data: {confirm: 'You Sure?'} %>
-        <% end %>
-    </li>
+      <%= image_tag course.image.thumb_small.url %>
+      <%= course.title %>
+      <%= link_to 'Edit', edit_course_path(course) %>
+      <%= link_to 'Delete', course_path(course), method: :delete, data: {confirm: 'You Sure?'} %>
+    <% end %>
+  </li>
 </ul>
 <%= paginate @courses %>

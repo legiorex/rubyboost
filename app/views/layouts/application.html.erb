@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>Rubyboost</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
+</head>
 
-  <body>
+<body>
+    <% if user_signed_in? %>
+    <%= link_to 'Log out', sessions_path, method: :delete %>
+    <% else %>
+    <%= link_to  "Log in", new_sessions_path  %>
+    <%= link_to  "Registrations", new_registrations_path  %>
+    <%end%>
     <%= yield %>
-  </body>
+</body>
+
 </html>
